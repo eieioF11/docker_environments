@@ -1,7 +1,9 @@
-# azure_kinect用docker
+# azure_kinect 用 docker
+
 ## Docker
 
 ### original image
+
 ubuntu:18.04
 
 ### ros version
@@ -9,15 +11,14 @@ ubuntu:18.04
 melodic
 
 ### installed tools
-* iproute2
-* iputils-ping
-* net-tools
-* terminator
-* nautilus
-* gedit
-* usbutils
 
-
+- iproute2
+- iputils-ping
+- net-tools
+- terminator
+- nautilus
+- gedit
+- usbutils
 
 ## Requirement
 
@@ -27,14 +28,14 @@ melodic
 
 * Azure Kinect DK
 
-
 ## Usage
 
 ### Build
 
 ```
-./build.sh
+sudo ./build.sh
 ```
+
 ### Run
 
 1. Set the ip address in `run.sh`
@@ -46,8 +47,9 @@ melodic
    ※If you use only one PC, please set both of them the same address.
 
 2. ```
-   ./run.sh
+   sudo ./run.sh
    ```
+
    If you run `./run.sh`, `packages/Azure_Kinect_ROS_Driver` will be mounted to the docker, and catkin build will be run automatically.
 
 3. ```
@@ -57,4 +59,5 @@ melodic
 ##
 
 ## 参考リポジトリ
+
 - https://github.com/Shunmo17/azure_kinect_docker
