@@ -86,5 +86,6 @@ RUN apt-get install -y librealsense2-dkms \
                        librealsense2-dev \
                        librealsense2-dbg
 RUN apt-get install -y ros-noetic-realsense2-camera
+RUN apt-get install ros-noetic-rgbd-launch
 RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
 
