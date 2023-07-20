@@ -1,2 +1,2 @@
 #!/bin/sh
-docker build -t ros_noetic:latest .
+docker build -t realsense_ros:latest .

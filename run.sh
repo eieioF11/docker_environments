@@ -10,5 +10,5 @@ docker run -it \
   --net host \
   --privileged \
   -v "/etc/localtime:/etc/localtime:ro" \
-  ros_noetic:latest \
+  realsense_ros:latest \
   bash

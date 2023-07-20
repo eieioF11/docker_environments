@@ -63,10 +63,6 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get -qq clean
 
-RUN apt-get update && apt-get install -y \
-    ros-noetic-navigation \
-    ros-noetic-gmapping
-
 COPY ./ros_entrypoint.sh /ros_entrypoint.sh
 RUN chmod +x /ros_entrypoint.sh
 ENTRYPOINT ["/ros_entrypoint.sh"]
@@ -76,3 +72,19 @@ ENTRYPOINT ["/ros_entrypoint.sh"]
 # SHELL ["/bin/bash", "-c"]
 # RUN source /opt/ros/noetic/setup.bash && \
 #     catkin_make
+
+# Install Intel Realsense SD
+RUN apt-get update && apt-get -y upgrade
+RUN apt-get install -y software-properties-common
+RUN apt-key adv --keyserver keyserver.ubuntu.com \
+                --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE || \
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \
+                --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE
+RUN add-apt-repository "deb https://librealsense.intel.com/Debian/apt-repo $(lsb_release -cs) main" -u
+RUN apt-get install -y librealsense2-dkms \
+                       librealsense2-utils \
+                       librealsense2-dev \
+                       librealsense2-dbg
+RUN apt-get install -y ros-noetic-realsense2-camera
+RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+
