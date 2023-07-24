@@ -11,6 +11,10 @@ sudo ./build.sh
 ```
  sudo ./run.sh
 ```
+gpuあり
+```
+ sudo ./run.sh -g
+```
 ### realsense-viewer
 
 ```
