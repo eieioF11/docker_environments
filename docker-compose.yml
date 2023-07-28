@@ -2,8 +2,8 @@ version: "2.3"
 services:
 
   # bash
-  bash-host:
-    container_name: bash-host
+  bash:
+    container_name: bash
     image: realsense_ros:latest
     network_mode: "host"
     command: bash -c "bash"
