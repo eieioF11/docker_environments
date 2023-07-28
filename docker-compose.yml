@@ -1,0 +1,96 @@
+version: "2.3"
+services:
+
+  # bash
+  bash-host:
+    container_name: bash-host
+    image: realsense_ros:latest
+    network_mode: "host"
+    command: bash -c "bash"
+    working_dir: /root/
+    volumes:
+      - ./catkin_ws:/root/catkin_ws
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /etc/localtime:/etc/localtime:ro
+      - /dev/input:/dev/input
+      - /dev/bus/usb/:/dev/bus/usb/:rw
+      - /tmp/.docker.xauth:/tmp/.docker.xauth:rw
+    environment:
+      - XAUTHORITY=/tmp/.docker.xauth
+      - DISPLAY
+      - QT_X11_NO_MITSHM=1
+      - ROS_MASTER_URI=${ROS_MASTER_URI}
+      - ROS_IP=${ROS_IP}
+      - ROS_HOST_NAME=${ROS_HOST_NAME}
+    privileged: true
+    stdin_open: true
+    tty: true
+
+  # master
+  master:
+    container_name: master
+    image: realsense_ros:latest
+    network_mode: "host"
+    command: roscore
+    environment:
+      - ROS_IP=${ROS_IP}
+      - ROS_HOST_NAME=${ROS_HOST_NAME}
+    tty: true
+
+  # rviz
+  rviz:
+    container_name: rviz
+    image: realsense_ros:latest
+    network_mode: "host"
+    command: bash -c 'rviz'
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /etc/localtime:/etc/localtime:ro
+      - /dev/input:/dev/input
+      - /tmp/.docker.xauth:/tmp/.docker.xauth:rw
+    environment:
+      - XAUTHORITY=/tmp/.docker.xauth
+      - DISPLAY
+      - QT_X11_NO_MITSHM=1
+      - ROS_MASTER_URI=${ROS_MASTER_URI}
+      - ROS_IP=${ROS_IP}
+      - ROS_HOST_NAME=${ROS_HOST_NAME}
+    privileged: true
+    tty: true
+
+# Realsense
+  realsense-viewer:
+    container_name: realsense-viewer
+    image: realsense_ros:latest
+    network_mode: "host"
+    command: bash -c "realsense-viewer"
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /etc/localtime:/etc/localtime:ro
+      - /dev/input:/dev/input
+      - /dev/bus/usb/:/dev/bus/usb/:rw
+      - /tmp/.docker.xauth:/tmp/.docker.xauth:rw
+    environment:
+      - WORLD_DIR=/root/catkin_ws/src/fields_ignition/generated_examples/tomato_field_narrow_paths
+      - XAUTHORITY=/tmp/.docker.xauth
+      - DISPLAY
+      - QT_X11_NO_MITSHM=1
+      - ROS_MASTER_URI=${ROS_MASTER_URI}
+      - ROS_IP=${ROS_IP}
+      - ROS_HOST_NAME=${ROS_HOST_NAME}
+    privileged: true
+    tty: true
+
+  rs-rgbd:
+    container_name: rs-rgbd
+    image: realsense_ros:latest
+    network_mode: "host"
+    command: bash -c "roslaunch realsense2_camera rs_rgbd.launch align_depth:=true"
+    volumes:
+      - /dev/bus/usb/:/dev/bus/usb/:rw
+    environment:
+      - ROS_MASTER_URI=${ROS_MASTER_URI}
+      - ROS_IP=${ROS_IP}
+      - ROS_HOST_NAME=${ROS_HOST_NAME}
+    privileged: true
+    tty: true
