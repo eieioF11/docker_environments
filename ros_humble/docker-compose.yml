@@ -17,7 +17,7 @@ services:
       - /tmp/.docker.xauth:/tmp/.docker.xauth:rw
     environment:
       - XAUTHORITY=/tmp/.docker.xauth
-      - DISPLAY
+      - DISPLAY={$DISPLAY}
       - QT_X11_NO_MITSHM=1
       - ROS_DOMAIN_ID=${ROS_DOMAIN_ID}
     privileged: true
@@ -90,10 +90,20 @@ services:
     container_name: colcon-build
     image: ros:humble
     working_dir: /root/ros2_ws
-    command: bash -c "colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release"
+    command: bash -c "colcon build --symlink-install --parallel-workers 3 --cmake-args -DCMAKE_BUILD_TYPE=Release"
     volumes:
       - ./ros2_ws:/root/ros2_ws
     tty: true
+
+  colcon-build-clean:
+    container_name: colcon-build
+    image: ros:humble
+    working_dir: /root/ros2_ws
+    command: bash -c "colcon build --symlink-install --parallel-workers 3 --cmake-clean-cache --cmake-args -DCMAKE_BUILD_TYPE=Release"
+    volumes:
+      - ./ros2_ws:/root/ros2_ws
+    tty: true
+
 
   # rviz2
   rviz2:

@@ -10,6 +10,7 @@ RUN apt-get -qq update && apt-get -q -y install \
     ca-certificates \
     build-essential \
     git \
+    gh \
     tmux \
     nano \
     wget \
@@ -24,6 +25,13 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get -qq clean
 
+# ipopt
+RUN apt-get update && apt-get install -y \
+    coinor-libipopt-dev \
+    gfortran \
+    libblas-dev \
+    liblapack-dev \
+    libmetis-dev
 # ros packages
 RUN apt-get update && apt-get install -y \
     ros-${ROS_DISTRO}-pcl-* \
