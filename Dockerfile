@@ -6,12 +6,9 @@ ARG DEBIAN_FRONTEND=noninteractive
 # tools
 RUN apt-get -qq update && apt-get -q -y install \
     gnupg2 \
-    curl \
     ca-certificates \
     build-essential \
-    git \
     vim \
-    wget \
     net-tools \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get -qq clean
@@ -24,10 +21,8 @@ RUN apt-get update && apt-get install -y \
 
 # ros packages
 RUN apt-get update && apt-get install -y \
-    ros-${ROS_DISTRO}-rviz2 \
     ros-${ROS_DISTRO}-pcl-* \
     ros-${ROS_DISTRO}-geometry2 \
-    ros-${ROS_DISTRO}-teleop-twist-keyboard \
     ros-${ROS_DISTRO}-joy
 
 COPY ./ros_entrypoint.sh /ros_entrypoint.sh
