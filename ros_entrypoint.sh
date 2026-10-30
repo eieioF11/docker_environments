@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-g_setup=/opt/ros/humble/setup.bash
+g_setup=/opt/ros/jazzy/setup.bash
 l_setup=/root/ros2_ws/install/local_setup.bash
 if [ -e $g_setup ]; then
    source $g_setup
