@@ -1,4 +1,4 @@
-FROM tiryoh/ros2-desktop-vnc:jazzy
+FROM ros:jazzy-ros-base
 
 ENV ROS_DISTRO jazzy
 ARG DEBIAN_FRONTEND=noninteractive
@@ -10,8 +10,6 @@ RUN apt-get -qq update && apt-get -q -y install \
     ca-certificates \
     build-essential \
     git \
-    gh \
-    tmux \
     vim \
     wget \
     net-tools \
@@ -30,10 +28,6 @@ RUN apt-get update && apt-get install -y \
     ros-${ROS_DISTRO}-pcl-* \
     ros-${ROS_DISTRO}-geometry2 \
     ros-${ROS_DISTRO}-teleop-twist-keyboard \
-    ros-${ROS_DISTRO}-navigation2 \
-    ros-${ROS_DISTRO}-nav2-bringup \
-    ros-${ROS_DISTRO}-xacro \
-    ros-${ROS_DISTRO}-joint-state-publisher-gui \
     ros-${ROS_DISTRO}-joy
 
 COPY ./ros_entrypoint.sh /ros_entrypoint.sh
