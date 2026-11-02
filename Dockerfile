@@ -5,7 +5,6 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # tools
 RUN apt-get -qq update && apt-get -q -y install \
-    gnupg2 \
     ca-certificates \
     build-essential \
     vim \
@@ -21,9 +20,7 @@ RUN apt-get update && apt-get install -y \
 
 # ros packages
 RUN apt-get update && apt-get install -y \
-    ros-${ROS_DISTRO}-pcl-* \
-    ros-${ROS_DISTRO}-geometry2 \
-    ros-${ROS_DISTRO}-joy
+    ros-${ROS_DISTRO}-pcl-*
 
 COPY ./ros_entrypoint.sh /ros_entrypoint.sh
 RUN chmod +x /ros_entrypoint.sh
