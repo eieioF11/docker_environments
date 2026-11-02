@@ -16,6 +16,9 @@ RUN apt-get update && apt-get install -y \
     libtbb-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# GTSAMライブラリのインストール
+RUN apt-get update && apt-get install -y libgtsam-dev
+
 # 2. PPAからIridescenceを追加してインストール
 RUN add-apt-repository -y ppa:koide3/iridescence && \
     apt-get update && apt-get install -y \
