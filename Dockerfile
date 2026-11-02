@@ -39,6 +39,8 @@ RUN apt-get update && rosdep update && \
     rosdep install --from-paths src --ignore-src -r -y && \
     rm -rf /var/lib/apt/lists/*
 
+RUN touch /usr/lib/aarch64-linux-gnu/libCppUnitLite.a
+
 # 5. ワークスペースのビルド
 RUN /bin/bash -c "source /opt/ros/jazzy/setup.bash && colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release"
 
