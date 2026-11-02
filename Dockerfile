@@ -37,12 +37,15 @@ RUN apt-get update && rosdep update && \
     rm -rf /var/lib/apt/lists/*
 
 # 5. GTSAMのパッケージングバグ回避用ダミーファイルを作成
-# アーキテクチャに依存しないよう、環境に応じて適切なディレクトリに作成します
 RUN if [ -d /usr/lib/aarch64-linux-gnu ]; then touch /usr/lib/aarch64-linux-gnu/libCppUnitLite.a; fi && \
     if [ -d /usr/lib/x86_64-linux-gnu ]; then touch /usr/lib/x86_64-linux-gnu/libCppUnitLite.a; fi
 
-# 6. ワークスペースのビルド
-RUN /bin/bash -c "source /opt/ros/jazzy/setup.bash && colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release"
+# 6. ワークスペースのビルド (スレッド数制限)
+# ここで指定した数値が colcon の並列実行パッケージ数と Ninja/Make のコンパイル並列数に適用されます
+ARG BUILD_JOBS=2
+RUN /bin/bash -c "source /opt/ros/jazzy/setup.bash && \
+    export CMAKE_BUILD_PARALLEL_LEVEL=${BUILD_JOBS} && \
+    colcon build --symlink-install --parallel-workers ${BUILD_JOBS} --cmake-args -DCMAKE_BUILD_TYPE=Release"
 
 # コンテナ起動時に環境変数を自動ロード
 RUN echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc && \
