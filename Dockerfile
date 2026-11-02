@@ -3,7 +3,7 @@ FROM ros:jazzy-ros-base
 ENV DEBIAN_FRONTEND=noninteractive
 ENV ROS_WS=/ros2_ws
 
-# 1. 必要なシステム依存パッケージとPPA追加用パッケージのインストール
+# 1. 必要なシステム依存パッケージ、PPA追加用パッケージ、GTSAMのインストール
 RUN apt-get update && apt-get install -y \
     software-properties-common \
     git \
@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     libboost-all-dev \
     libpcl-dev \
     libtbb-dev \
+    libgtsam-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. PPAからIridescenceを追加してインストール
@@ -24,7 +25,7 @@ RUN add-apt-repository -y ppa:koide3/iridescence && \
 
 WORKDIR $ROS_WS/src
 
-# 3. 対象パッケージのクローン（両方ともサブモジュールを再帰的に取得するように修正）
+# 3. 対象パッケージのクローン（サブモジュールを再帰的に取得）
 RUN git clone -b devel --recursive https://github.com/eieioF11/simple_slam.git && \
     git clone --recursive https://github.com/eieioF11/ros2_common_tools.git
 
@@ -43,6 +44,3 @@ RUN echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc && \
     echo "source ${ROS_WS}/install/setup.bash" >> ~/.bashrc
 
 CMD ["bash"]
-# COPY ./ros_entrypoint.sh /ros_entrypoint.sh
-# RUN chmod +x /ros_entrypoint.sh
-# ENTRYPOINT ["/ros_entrypoint.sh"]
