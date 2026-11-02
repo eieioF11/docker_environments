@@ -36,7 +36,12 @@ RUN apt-get update && rosdep update && \
     rosdep install --from-paths src --ignore-src -r -y && \
     rm -rf /var/lib/apt/lists/*
 
-# 5. ワークスペースのビルド
+# 5. GTSAMのパッケージングバグ回避用ダミーファイルを作成
+# アーキテクチャに依存しないよう、環境に応じて適切なディレクトリに作成します
+RUN if [ -d /usr/lib/aarch64-linux-gnu ]; then touch /usr/lib/aarch64-linux-gnu/libCppUnitLite.a; fi && \
+    if [ -d /usr/lib/x86_64-linux-gnu ]; then touch /usr/lib/x86_64-linux-gnu/libCppUnitLite.a; fi
+
+# 6. ワークスペースのビルド
 RUN /bin/bash -c "source /opt/ros/jazzy/setup.bash && colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release"
 
 # コンテナ起動時に環境変数を自動ロード
