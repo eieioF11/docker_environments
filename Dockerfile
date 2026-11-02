@@ -44,8 +44,8 @@ RUN if [ -d /usr/lib/aarch64-linux-gnu ]; then touch /usr/lib/aarch64-linux-gnu/
 # ここで指定した数値が colcon の並列実行パッケージ数と Ninja/Make のコンパイル並列数に適用されます
 ARG BUILD_JOBS=2
 RUN /bin/bash -c "source /opt/ros/jazzy/setup.bash && \
-    export CMAKE_BUILD_PARALLEL_LEVEL=${BUILD_JOBS} && \
-    colcon build --symlink-install --parallel-workers ${BUILD_JOBS} --cmake-args -DCMAKE_BUILD_TYPE=Release"
+    export CMAKE_BUILD_PARALLEL_LEVEL=1 && \
+    colcon build --symlink-install --parallel-workers 1 --cmake-args -DCMAKE_BUILD_TYPE=Release"
 
 # コンテナ起動時に環境変数を自動ロード
 RUN echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc && \
