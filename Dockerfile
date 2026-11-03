@@ -4,10 +4,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV ROS_WS=/ros2_ws
 
 # 並列ビルド数を指定（GTSAMとcolconの両方に適用）
-ARG BUILD_JOBS=1
+ARG BUILD_JOBS=2
 
 # 1. 必要なシステム依存パッケージ、GTSAMのインストール
-# GLFW3 と GLM の開発用パッケージを追加
 RUN apt-get update && apt-get install -y \
     software-properties-common \
     git \
@@ -20,6 +19,7 @@ RUN apt-get update && apt-get install -y \
     libtbb-dev \
     libglfw3-dev \
     libglm-dev \
+    libeigen3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. PPAからIridescenceを追加してインストール
@@ -29,15 +29,17 @@ RUN add-apt-repository -y ppa:koide3/iridescence && \
     && rm -rf /var/lib/apt/lists/*
 
 # 3. GTSAMをソースからビルドしてインストール
+# システムのEigenを利用するようにフラグを追加
 WORKDIR /tmp
 RUN git clone -b 4.2.0 https://github.com/borglab/gtsam.git && \
     cd gtsam && \
     mkdir build && cd build && \
     cmake -DCMAKE_BUILD_TYPE=Release \
-    -DGTSAM_BUILD_TESTS=OFF \
-    -DGTSAM_BUILD_EXAMPLES_ALWAYS=OFF \
-    -DGTSAM_BUILD_WITH_MARCH_NATIVE=OFF \
-    .. && \
+          -DGTSAM_BUILD_TESTS=OFF \
+          -DGTSAM_BUILD_EXAMPLES_ALWAYS=OFF \
+          -DGTSAM_BUILD_WITH_MARCH_NATIVE=OFF \
+          -DGTSAM_USE_SYSTEM_EIGEN=ON \
+          .. && \
     make -j${BUILD_JOBS} install && \
     ldconfig && \
     rm -rf /tmp/gtsam
