@@ -6,7 +6,8 @@ ENV ROS_WS=/ros2_ws
 # 並列ビルド数を指定（GTSAMとcolconの両方に適用）
 ARG BUILD_JOBS=1
 
-# 1. 必要なシステム依存パッケージ、PPA追加用パッケージのインストール
+# 1. 必要なシステム依存パッケージ、GTSAMのインストール
+# GLFW3 と GLM の開発用パッケージを追加
 RUN apt-get update && apt-get install -y \
     software-properties-common \
     git \
@@ -17,6 +18,8 @@ RUN apt-get update && apt-get install -y \
     libboost-all-dev \
     libpcl-dev \
     libtbb-dev \
+    libglfw3-dev \
+    libglm-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. PPAからIridescenceを追加してインストール
@@ -26,7 +29,6 @@ RUN add-apt-repository -y ppa:koide3/iridescence && \
     && rm -rf /var/lib/apt/lists/*
 
 # 3. GTSAMをソースからビルドしてインストール
-# テストやサンプルコードのビルドを無効化して時間と容量を節約します
 WORKDIR /tmp
 RUN git clone -b 4.2.0 https://github.com/borglab/gtsam.git && \
     cd gtsam && \
