@@ -2,6 +2,7 @@ FROM ros:jazzy-ros-base
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV ROS_WS=/ros2_ws
+ARG BUILD_JOBS=1
 
 # 1. 必要なシステム依存パッケージ、PPA追加用パッケージ、GTSAMのインストール
 RUN apt-get update && apt-get install -y \
@@ -41,8 +42,6 @@ RUN if [ -d /usr/lib/aarch64-linux-gnu ]; then touch /usr/lib/aarch64-linux-gnu/
     if [ -d /usr/lib/x86_64-linux-gnu ]; then touch /usr/lib/x86_64-linux-gnu/libCppUnitLite.a; fi
 
 # 6. ワークスペースのビルド (スレッド数制限)
-# ここで指定した数値が colcon の並列実行パッケージ数と Ninja/Make のコンパイル並列数に適用されます
-ARG BUILD_JOBS=1
 RUN /bin/bash -c "source /opt/ros/jazzy/setup.bash && \
     export CMAKE_BUILD_PARALLEL_LEVEL=${BUILD_JOBS} && \
     colcon build --symlink-install --parallel-workers ${BUILD_JOBS} --cmake-args -DCMAKE_BUILD_TYPE=Release"
