@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV ROS_WS=/ros2_ws
 
 # 並列ビルド数を指定（GTSAMとcolconの両方に適用）
-ARG BUILD_JOBS=2
+ARG BUILD_JOBS=1
 
 # 1. 必要なシステム依存パッケージ、GTSAMのインストール
 RUN apt-get update && apt-get install -y \
@@ -29,17 +29,16 @@ RUN add-apt-repository -y ppa:koide3/iridescence && \
     && rm -rf /var/lib/apt/lists/*
 
 # 3. GTSAMをソースからビルドしてインストール
-# システムのEigenを利用するようにフラグを追加
 WORKDIR /tmp
 RUN git clone -b 4.2.0 https://github.com/borglab/gtsam.git && \
     cd gtsam && \
     mkdir build && cd build && \
     cmake -DCMAKE_BUILD_TYPE=Release \
-          -DGTSAM_BUILD_TESTS=OFF \
-          -DGTSAM_BUILD_EXAMPLES_ALWAYS=OFF \
-          -DGTSAM_BUILD_WITH_MARCH_NATIVE=OFF \
-          -DGTSAM_USE_SYSTEM_EIGEN=ON \
-          .. && \
+    -DGTSAM_BUILD_TESTS=OFF \
+    -DGTSAM_BUILD_EXAMPLES_ALWAYS=OFF \
+    -DGTSAM_BUILD_WITH_MARCH_NATIVE=OFF \
+    -DGTSAM_USE_SYSTEM_EIGEN=ON \
+    .. && \
     make -j${BUILD_JOBS} install && \
     ldconfig && \
     rm -rf /tmp/gtsam
@@ -50,14 +49,17 @@ WORKDIR $ROS_WS/src
 RUN git clone -b devel --recursive https://github.com/eieioF11/simple_slam.git && \
     git clone --recursive https://github.com/eieioF11/ros2_common_tools.git
 
+# 5. Jazzy環境向けに古いtf2_eigenのヘッダ拡張子を.hppに一括置換する回避策
+RUN find . -type f -name "*.hpp" -o -name "*.cpp" -o -name "*.h" | xargs sed -i 's/<tf2_eigen\/tf2_eigen.h>/<tf2_eigen\/tf2_eigen.hpp>/g'
+
 WORKDIR $ROS_WS
 
-# 5. rosdepによるROS依存関係の解決
+# 6. rosdepによるROS依存関係の解決
 RUN apt-get update && rosdep update && \
     rosdep install --from-paths src --ignore-src -r -y && \
     rm -rf /var/lib/apt/lists/*
 
-# 6. ワークスペースのビルド
+# 7. ワークスペースのビルド
 RUN /bin/bash -c "source /opt/ros/jazzy/setup.bash && \
     export CMAKE_BUILD_PARALLEL_LEVEL=${BUILD_JOBS} && \
     colcon build --symlink-install --parallel-workers ${BUILD_JOBS} --cmake-args -DCMAKE_BUILD_TYPE=Release"
