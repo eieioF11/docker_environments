@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV ROS_WS=/ros2_ws
 
 # 並列ビルド数を指定（GTSAMとcolconの両方に適用）
-ARG BUILD_JOBS=1
+ARG BUILD_JOBS=2
 
 # 1. 必要なシステム依存パッケージ、GTSAMのインストール
 RUN apt-get update && apt-get install -y \
