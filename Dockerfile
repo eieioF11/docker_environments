@@ -46,7 +46,7 @@ RUN git clone -b 4.2.0 https://github.com/borglab/gtsam.git && \
 WORKDIR $ROS_WS/src
 
 # 4. 対象パッケージのクローン（サブモジュールを再帰的に取得）
-RUN git clone -b devel --recursive https://github.com/eieioF11/simple_slam.git && \
+RUN git clone -b main --recursive https://github.com/eieioF11/simple_slam.git && \
     git clone --recursive https://github.com/eieioF11/ros2_common_tools.git
 
 # 5. Jazzy環境向けに古いtf2_eigenのヘッダ拡張子を.hppに一括置換する回避策
