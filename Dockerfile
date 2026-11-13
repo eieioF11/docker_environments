@@ -4,9 +4,11 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV ROS_WS=/ros2_ws
 
 # 並列ビルド数を指定（GTSAMとcolconの両方に適用）
-ARG BUILD_JOBS=1
+ARG BUILD_JOBS=4
+ARG CACHE_DATE=2026-11-13_2
 
 # 1. 必要なシステム依存パッケージ、GTSAMのインストール
+# （※package.xmlに記述漏れがあった場合に備え、tf2関連パッケージも明示的に追加）
 RUN apt-get update && apt-get install -y \
     software-properties-common \
     git \
@@ -20,6 +22,9 @@ RUN apt-get update && apt-get install -y \
     libglfw3-dev \
     libglm-dev \
     libeigen3-dev \
+    ros-jazzy-tf2-geometry-msgs \
+    ros-jazzy-tf2-sensor-msgs \
+    ros-jazzy-tf2-eigen \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. PPAからIridescenceを追加してインストール
@@ -46,11 +51,8 @@ RUN git clone -b 4.2.0 https://github.com/borglab/gtsam.git && \
 WORKDIR $ROS_WS/src
 
 # 4. 対象パッケージのクローン（サブモジュールを再帰的に取得）
-RUN git clone -b main --recursive https://github.com/eieioF11/simple_slam.git && \
-    git clone --recursive https://github.com/eieioF11/ros2_common_tools.git
-
-# 5. Jazzy環境向けに古いtf2_eigenのヘッダ拡張子を.hppに一括置換する回避策
-RUN find . -type f -name "*.hpp" -o -name "*.cpp" -o -name "*.h" | xargs sed -i 's/<tf2_eigen\/tf2_eigen.h>/<tf2_eigen\/tf2_eigen.hpp>/g'
+RUN git clone -b devel --recursive https://github.com/eieioF11/simple_slam.git && \
+    git clone -b jazzy --recursive https://github.com/eieioF11/ros2_common_tools.git
 
 WORKDIR $ROS_WS
 
