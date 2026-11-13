@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV ROS_WS=/ros2_ws
 
 # 並列ビルド数を指定（GTSAMとcolconの両方に適用）
-ARG BUILD_JOBS=4
+ARG BUILD_JOBS=1
 ARG CACHE_DATE=2026-11-13_2
 
 # 1. 必要なシステム依存パッケージ、GTSAMのインストール
